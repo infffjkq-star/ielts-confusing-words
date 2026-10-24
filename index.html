@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f7ff">
+<title>雅思易混词小助手</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:22px;background:#f5f7ff;color:#26304a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:600px;margin:auto}
+h1{font-size:27px;margin-bottom:8px}
+.sub{color:#69738b;font-size:14px}
+.card{background:white;border-radius:18px;padding:20px;margin-top:18px;box-shadow:0 4px 18px #27385c12}
+input,button{font:inherit;border-radius:12px;padding:13px;border:1px solid #d7dceb}
+input{width:100%;margin:12px 0}
+button{background:#5368d9;color:white;border:0;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{background:#edf0ff;color:#3e50a4;padding:9px 12px}
+.word{font-size:25px;font-weight:750}
+.phon{color:#737d93}
+.mean{font-size:18px;margin:8px 0}
+.example{background:#f5f7ff;padding:12px;border-radius:10px;line-height:1.6}
+.label{color:#6574bb;font-size:13px;font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>📚 雅思易混词小助手</h1>
+<div class="sub">每天分清几个词，积累真正会用的英语</div>
+<section class="card">
+<h3>🔎 搜单词或中文意思</h3>
+<input id="q" placeholder="例如 burst、燃烧、排放" oninput="search()">
+<div class="chips">
+<button onclick="pick('burst')">burst / burn</button>
+<button onclick="pick('emission')">emission / mission</button>
+<button onclick="pick('adapt')">adapt / adopt</button>
+<button onclick="pick('affect')">affect / effect</button>
+</div>
+<div id="result"></div>
+</section>
+<section class="card">
+<h3>💡 易混词速记</h3>
+<p><b>burst</b>：突然爆裂；<b>burn</b>：燃烧</p>
+<p><b>emission</b>：排放；<b>mission</b>：任务</p>
+<p><b>adapt</b>：适应；<b>adopt</b>：采纳、收养</p>
+<p><b>affect</b>：影响（动词）；<b>effect</b>：影响、效果（名词常见）</p>
+</section>
+</main>
+<script>
+const words=[
+{w:"burst",p:"/bɜːst/",m:"爆裂；突然发生",e:"The balloon burst suddenly.",c:"burst / burn",tip:"burst 强调突然爆开；burn 强调燃烧。"},
+{w:"burn",p:"/bɜːn/",m:"燃烧；烧伤",e:"Be careful not to burn the food.",c:"burst / burn",tip:"burn 是燃烧，不是突然爆裂。"},
+{w:"emission",p:"/ɪˈmɪʃən/",m:"排放；散发",e:"Car emissions contribute to air pollution.",c:"emission / mission",tip:"emission 常用于污染物、气体排放。"},
+{w:"mission",p:"/ˈmɪʃən/",m:"任务；使命",e:"Our mission is to help students learn.",c:"emission / mission",tip:"mission 指任务或使命。"},
+{w:"adapt",p:"/əˈdæpt/",m:"适应；改编",e:"It takes time to adapt to a new environment.",c:"adapt / adopt",tip:"adapt = 适应；adapt to 后接适应的对象。"},
+{w:"adopt",p:"/əˈdɒpt/",m:"采纳；收养",e:"The school adopted a new policy.",c:"adapt / adopt",tip:"adopt = 采纳方法、政策，或收养孩子。"},
+{w:"affect",p:"/əˈfekt/",m:"影响（动词）",e:"Lack of sleep can affect your memory.",c:"affect / effect",tip:"affect 通常作动词，表示影响。"},
+{w:"effect",p:"/ɪˈfekt/",m:"影响；效果（名词）",e:"The new rule had a positive effect.",c:"affect / effect",tip:"effect 常作名词，表示影响或效果。"}
+];
+function render(list){
+const el=document.getElementById('result');
+if(!list.length){el.innerHTML='<p>暂时没有找到。试试 burst、adapt 或中文意思。</p>';return}
+el.innerHTML=list.map(x=>`<div class="card"><div class="word">${x.w}</div><div class="phon">${x.p}</div><div class="mean">${x.m}</div><div class="label">例句</div><div class="example">${x.e}<br><button onclick="speak('${x.w}')" style="margin-top:8px">🔊 听发音</button></div><p><b>易混组：</b>${x.c}</p><p>${x.tip}</p></div>`).join('');
+}
+function search(){
+const q=document.getElementById('q').value.trim().toLowerCase();
+if(!q){document.getElementById('result').innerHTML='';return}
+render(words.filter(x=>(x.w+' '+x.m+' '+x.e+' '+x.c+' '+x.tip).toLowerCase().includes(q)));
+}
+function pick(w){document.getElementById('q').value=w;render(words.filter(x=>x.c===words.find(y=>y.w===w).c))}
+function speak(w){if('speechSynthesis' in window){let u=new SpeechSynthesisUtterance(w);u.lang='en-GB';speechSynthesis.speak(u)}}
+</script>
+</body>
+</html>
